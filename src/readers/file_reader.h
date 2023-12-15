@@ -12,6 +12,7 @@
 #include "../helpers/num_cores.h"
 
 typedef struct task {
+    char *path;
     char *line;
     regex_t *regex;
     struct task *next;
@@ -27,7 +28,7 @@ typedef struct {
 
 void init_queue(task_queue_t *q);
 
-void enqueue_task(task_queue_t *q, char *line, regex_t *regex);
+void enqueue_task(task_queue_t *q, char *line, char *path, regex_t *regex);
 
 regex_task_t* dequeue(task_queue_t *q);
 

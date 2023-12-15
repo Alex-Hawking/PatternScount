@@ -7,9 +7,10 @@ void init_queue(task_queue_t *q) {
     pthread_cond_init(&q->cond, NULL);
 }
 
-void enqueue_task(task_queue_t *q, char *line, regex_t *regex) {
+void enqueue_task(task_queue_t *q, char *line, char *path, regex_t *regex) {
     regex_task_t *new_task = malloc(sizeof(regex_task_t));
     new_task->line = strdup(line);
+    new_task->path = strdup(path);
     new_task->regex = regex;
     new_task->next = NULL;
 
@@ -63,27 +64,37 @@ void *worker_thread(void *arg) {
     task_queue_t *queue = (task_queue_t *)arg;
     while (1) {
         regex_task_t *task = dequeue(queue);
-        if (task == NULL || task->line == NULL) {  
+        if (task == NULL || task->line == NULL) {
             free(task);
             break;
         }
 
         int offset = 0;
         regmatch_t match_t[1];
+        int lineLength = strlen(task->line);
 
         while (regexec(task->regex, task->line + offset, 1, match_t, 0) == 0) {
-            if (match_t[0].rm_so != (size_t) - 1) {
-                int start = offset + match_t[0].rm_so;
-                int end = offset + match_t[0].rm_eo;
-                printf("Match found at position %d to %d: %.*s\n", start, end, end - start, &task->line[start]);
-                offset += match_t[0].rm_eo;
+            int start = offset + match_t[0].rm_so;
+            int end = offset + match_t[0].rm_eo;
+
+            if (end == start) {
+                if (end < lineLength) {
+                    offset = end + 1;
+                } else {
+                    break;
+                }
             } else {
-                break;
+                offset = end;
             }
+
+            printf("%s\t", task->path);
+            printf("%.*s", start, task->line);           
+            printf("%.*s", end - start, &task->line[start]); 
+            printf("%.*s\n", lineLength - end, &task->line[end]);
         }
 
         free(task->line);
-        free(task); 
+        free(task);
     }
 
     return NULL;
@@ -120,7 +131,11 @@ void match_lines_file(char *filePath, char *regexPattern) {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        enqueue_task(&q, line, &regex);
+        size_t len = strlen(line);
+        if (len > 0 && line[len - 1] == '\n') {
+            line[len - 1] = '\0';
+        }
+        enqueue_task(&q, line, filePath, &regex);
     }
 
     for (int i = 0; i < NUM_THREADS; i++) {
