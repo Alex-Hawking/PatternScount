@@ -8,7 +8,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "file_reader.h"
+
 bool is_text_file(const char *filename);
-void open_dir(char *path);
+void open_dir(char *path, char *regex_pattern);
 
 #endif

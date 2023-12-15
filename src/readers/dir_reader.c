@@ -1,48 +1,40 @@
 #include "dir_reader.h"
 
-bool is_text_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("fopen");
-        return false;
-    }
-
-    int ch;
-    while ((ch = fgetc(file)) != EOF) {
-        if (ch > 0 && (ch < 32 || ch == 127) && ch != '\t' && ch != '\n' && ch != '\r') {
-            fclose(file);
-            return false;
-        }
-    }
-
-    fclose(file);
-    return true;
-}
-
-void open_dir(char *path) {
+void open_dir(char *path, char *regex_pattern) {
     DIR *d;
     struct dirent *dir;
     struct stat fileStat;
+    char fullPath[1024]; 
 
     d = opendir(path);
-    if (d == NULL ){
+    if (d == NULL) {
         perror("Error opening directory");
         exit(1);
     }
 
     while ((dir = readdir(d)) != NULL) {
-        if (stat(dir->d_name, &fileStat) < 0) {
+
+        if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0) {
+            continue;
+        }
+
+        if (path[strlen(path) - 1] == '/') {
+            snprintf(fullPath, sizeof(fullPath), "%s%s", path, dir->d_name);
+        } else {
+            snprintf(fullPath, sizeof(fullPath), "%s/%s", path, dir->d_name);
+        }
+
+        if (stat(fullPath, &fileStat) < 0) {
+            perror("stat");
             continue;
         }
 
         if (S_ISREG(fileStat.st_mode)) {
-            if (strcmp(dir->d_name, "text")) {
-            }
+            match_lines_file(fullPath, regex_pattern);
         } else if (S_ISDIR(fileStat.st_mode)) {
-        
+            printf("Directory: %s\n", fullPath);
         }
     }
 
     closedir(d);
-
 }

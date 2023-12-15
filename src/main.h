@@ -8,5 +8,6 @@
 
 #include "./printers/colours.h"
 #include "./readers/file_reader.h"
+#include "./readers/dir_reader.h"
 
 #endif

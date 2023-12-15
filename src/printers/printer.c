@@ -19,6 +19,7 @@ int intStrLen(char *input) {
 void printer(char *path, int line_number, int start, int end, char *line, int lineLength) {
 
     char header[1024];
+    char out[2048];
 
     sprintf(header, "%s%s  %d%s  ", bold.ansi_code,path, line_number, clear.ansi_code);
     int header_len = intStrLen(header);
@@ -26,22 +27,22 @@ void printer(char *path, int line_number, int start, int end, char *line, int li
 
     const int MAX_LENGTH = (get_terminal_width() - header_len - match_len) / 2;
 
-    printf("%s", header);
+    sprintf(out, "%s", header);
 
 
     if (start > MAX_LENGTH) {
-            printf("...%.*s", MAX_LENGTH, line + start - MAX_LENGTH);
+            sprintf(out, "%s...%.*s", out, MAX_LENGTH, line + start - MAX_LENGTH);
         } else {
-            printf("%.*s", start, line);
+            sprintf(out, "%s%.*s", out, start, line);
         }
 
-        printf("%s%.*s%s",red.ansi_code, end - start, &line[start], clear.ansi_code);
+        sprintf(out, "%s%s%.*s%s", out, red.ansi_code, end - start, &line[start], clear.ansi_code);
 
         if (lineLength - end > MAX_LENGTH) {
-            printf("%.*s...", MAX_LENGTH, &line[end]);
+            sprintf(out, "%s%.*s...", out, MAX_LENGTH, &line[end]);
         } else {
-            printf("%.*s", lineLength - end, &line[end]);
+            sprintf(out, "%s%.*s", out, lineLength - end, &line[end]);
         }
 
-        printf("\n");
+        printf("%s\n", out);
 }

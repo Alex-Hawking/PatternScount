@@ -28,8 +28,15 @@ int main(int argc, char *argv[]) {
     char *path = argv[optind + 1];
 
     initColours();
+    switch (check_path(path)) {
+        case 'f':
+            match_lines_file(path, regex_pattern);
+            break;
+        case 'd':
+            open_dir(path, regex_pattern);
+            break;
+    }
 
-    match_lines_file(path, regex_pattern);
 
     return 0;
 }

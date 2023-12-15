@@ -8,7 +8,7 @@ CFLAGS = -Wall -g
 EXEC = scout
 
 # Source files
-SRC = ./src/main.c ./src/readers/dir_reader.c ./src/readers/file_reader.c ./src/printers/colours.c ./src/printers/printer.c ./src/helpers/num_cores.c ./src/helpers/terminal_width.c
+SRC = ./src/main.c ./src/readers/dir_reader.c ./src/readers/file_reader.c ./src/printers/colours.c ./src/printers/printer.c ./src/helpers/num_cores.c ./src/helpers/terminal_width.c ./src/helpers/path_type.c
 
 # Object files
 OBJ = $(notdir $(SRC:.c=.o))
