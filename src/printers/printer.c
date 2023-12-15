@@ -24,7 +24,7 @@ void printer(char *path, int line_number, int start, int end, char *line, int li
     int header_len = intStrLen(header);
     int match_len = end - start;
 
-    const int MAX_LENGTH = (get_terminal_width() - header_len - match_len - 6) / 2;
+    const int MAX_LENGTH = (get_terminal_width() - header_len - match_len) / 2;
 
     printf("%s", header);
 
