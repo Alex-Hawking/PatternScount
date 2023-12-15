@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Executable name
-EXEC = main
+EXEC = scout
 
 # Source files
 SRC = ./src/main.c ./src/readers/dir_reader.c ./src/readers/file_reader.c ./src/printers/colours.c ./src/printers/printer.c ./src/helpers/num_cores.c
