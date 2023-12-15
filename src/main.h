@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "./printers/colours.h"
 #include "./readers/file_reader.h"
 
 #endif

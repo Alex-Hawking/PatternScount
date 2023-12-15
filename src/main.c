@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
     char *regex_pattern = argv[optind];
     char *path = argv[optind + 1];
 
+    initColours();
+
     match_lines_file(path, regex_pattern);
 
     return 0;

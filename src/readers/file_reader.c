@@ -7,12 +7,13 @@ void init_queue(task_queue_t *q) {
     pthread_cond_init(&q->cond, NULL);
 }
 
-void enqueue_task(task_queue_t *q, char *line, char *path, regex_t *regex) {
+void enqueue_task(task_queue_t *q, char *line, char *path, int number, regex_t *regex) {
     regex_task_t *new_task = malloc(sizeof(regex_task_t));
     new_task->line = strdup(line);
     new_task->path = strdup(path);
     new_task->regex = regex;
     new_task->next = NULL;
+    new_task->number = number;
 
     pthread_mutex_lock(&q->lock);
     if (q->tail) {
@@ -87,10 +88,7 @@ void *worker_thread(void *arg) {
                 offset = end;
             }
 
-            printf("%s\t", task->path);
-            printf("%.*s", start, task->line);           
-            printf("%.*s", end - start, &task->line[start]); 
-            printf("%.*s\n", lineLength - end, &task->line[end]);
+            printer(task->path, task->number, start, end, task->line,lineLength);
         }
 
         free(task->line);
@@ -130,12 +128,15 @@ void match_lines_file(char *filePath, char *regexPattern) {
         pthread_create(&workers[i], NULL, worker_thread, &q);
     }
 
+    int linenumber = 0;
+
     while (fgets(line, sizeof(line), file)) {
+        linenumber++;
         size_t len = strlen(line);
         if (len > 0 && line[len - 1] == '\n') {
             line[len - 1] = '\0';
         }
-        enqueue_task(&q, line, filePath, &regex);
+        enqueue_task(&q, line, filePath, linenumber, &regex);
     }
 
     for (int i = 0; i < NUM_THREADS; i++) {

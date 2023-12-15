@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "colours.h"
+#include "../helpers/helpers.h"
 
-void printer(char *text, char *match, char *type);
+void initColours();
+
+void printer(char *path, int line_number, int start, int end, char *line, int lineLength);
 
 #endif

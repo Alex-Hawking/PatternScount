@@ -9,11 +9,13 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
-#include "../helpers/num_cores.h"
+#include "../printers/printer.h"
+#include "../helpers/helpers.h"
 
 typedef struct task {
     char *path;
     char *line;
+    int number;
     regex_t *regex;
     struct task *next;
 } regex_task_t;
@@ -28,7 +30,7 @@ typedef struct {
 
 void init_queue(task_queue_t *q);
 
-void enqueue_task(task_queue_t *q, char *line, char *path, regex_t *regex);
+void enqueue_task(task_queue_t *q, char *line, char *path, int number, regex_t *regex);
 
 regex_task_t* dequeue(task_queue_t *q);
 

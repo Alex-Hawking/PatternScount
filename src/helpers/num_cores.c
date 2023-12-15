@@ -1,4 +1,4 @@
-#include "num_cores.h"
+#include "helpers.h"
 
 int get_number_of_cores() {
     int n;
