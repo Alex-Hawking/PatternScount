@@ -1,15 +1,6 @@
 #include "main.h"
 
 int main(int argc, char *argv[]) {
-
-    /*
-    Some stuff so I remember how to do it
-    
-        char *myString = "some text, this is a variable %s";
-        char string2[100];
-        sprintf(string2, myString, "bruh");
-        printf("%s\n", string2);
-    */
     
     int opt;
 
